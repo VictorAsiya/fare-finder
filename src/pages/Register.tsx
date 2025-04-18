@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import  {SelectInput} from "@/components/ui/select-Input";
+import { SelectInput } from "@/components/ui/select-Input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -12,15 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  User,
-  MapPin,
-  Phone
-} from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, MapPin, Phone } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -65,22 +58,12 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Register = () => {
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [confirm_password, setConfirm_Password] = useState("");
-  // const [user_type, setuser_type] = useState("");
-  // const [name, setName] = useState("");
-  // const [phone_number, setPhone_number] = useState("");
-  // const [location, setLocation] = useState("Enugu");
-
-  // const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<RegisterFormValues>({
@@ -105,20 +88,59 @@ const Register = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  // interface RegisterResponse {
-  //   id: number;
-  //   name: string;
-  //   email: string;
-  //   phone_number: string;
-  //   location: string;
-  //   user_type: string;
-  //   token: string;
-  // }
+  // const onSubmit = async (data: RegisterFormValues) => {
+  //   setLoading(true);
+  //   setError(false);
+
+  //   const payload = {
+  //     name: data.name,
+  //     email: data.email,
+  //     password: data.password,
+  //     confirm_password: data.confirmPassword,
+  //     user_type: data.user_type,
+  //     phone_number: data.phone,
+  //     location: data.location,
+  //   };
+
+  //   try {
+  //     const response = await fetch(
+  //       "https://gofare.onrender.com/api/users/signup/",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(payload),
+  //       }
+  //     );
+
+  //     const result = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         result?.detail || "Something went wrong, please try again."
+  //       );
+  //     }
+
+  //     //Save token to localStorage if available
+  //     if (result?.token) {
+  //       localStorage.setItem("token", result.token);
+  //     }
+
+  //     console.log("Registered:", result);
+  //     navigate("/login");
+  //   } catch (err: any) {
+  //     // console.error("Signup Error:", err.message);
+  //     setError(err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const onSubmit = async (data: RegisterFormValues) => {
     setLoading(true);
-    setError(false);
-  
+    setError(false); // or setError(""), depending on type
+
     const payload = {
       name: data.name,
       email: data.email,
@@ -128,32 +150,42 @@ const Register = () => {
       phone_number: data.phone,
       location: data.location,
     };
-  
+
     try {
-      const response = await fetch("https://gofare.onrender.com/api/users/signup/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-  
+      const response = await fetch(
+        "https://gofare.onrender.com/api/users/signup/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
       const result = await response.json();
-  
+
       if (!response.ok) {
-        throw new Error(result?.detail || "Something went wrong, please try again.");
+        // Check for detailed validation errors or fallback message
+        const message =
+          result?.detail ||
+          result?.message ||
+          Object.values(result || {})?.[0] ||
+          "Something went wrong. Please try again.";
+
+        throw new Error(message);
       }
 
-      //Save token to localStorage if available
-    if (result?.token) {
-      localStorage.setItem("token", result.token);
-    }
-  
+      // Save token if available
+      if (result?.token) {
+        localStorage.setItem("token", result.token);
+      }
+
       console.log("Registered:", result);
       navigate("/login");
     } catch (err: any) {
-      // console.error("Signup Error:", err.message);
-      setError(err.message);
+      const friendlyError = err?.message || "Network error. Please try again.";
+      setError(friendlyError);
     } finally {
       setLoading(false);
     }
@@ -385,7 +417,6 @@ const Register = () => {
                           <a
                             href="#"
                             className={`${nigeriaGreenText} hover:underline`}
-                            
                           >
                             terms and conditions
                           </a>
@@ -396,20 +427,38 @@ const Register = () => {
                   )}
                 />
 
-                {!loading && <Button
-                  type="submit"
-                  className={`w-full ${nigeriaGreen} ${nigeriaGreenHover}`}
-                >
-                  Create Account
-                </Button>}
+                {!loading && (
+                  <Button
+                    type="submit"
+                    className={`w-full ${nigeriaGreen} ${nigeriaGreenHover}`}
+                  >
+                    Create Account
+                  </Button>
+                )}
 
-                {loading && <Button
-                type="submit"
-                disabled
-                className={`w-full bg-[#2963f5]`}
-                >
-                  Loading...
-                </Button>}
+                {/* Loading Overlay */}
+                {loading && (
+                  <div className="top-[-10vh] fixed inset-0  z-10 bg-black bg-opacity-50 flex items-center justify-center">
+                    <Loader2 className="h-12 w-12 text-white animate-spin" />
+                  </div>
+                )}
+
+                {loading && (
+                  <Button
+                    type="submit"
+                    disabled
+                    className={`w-full bg-[#2963f5]`}
+                  >
+                    Loading...
+                  </Button>
+                )}
+
+                {error && (
+                  <div className="text-red-500 text-sm text-center mb-4">
+                    {error}
+                  </div>
+                )}
+                
               </form>
             </Form>
           </CardContent>
