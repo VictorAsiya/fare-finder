@@ -1,0 +1,114 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 33% 98%;
+    --foreground: 224 71% 4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+
+    --primary: 222 80% 53%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 222 47% 95%;
+    --secondary-foreground: 222 47% 20%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 14% 46%;
+
+    --accent: 220 79% 57%;
+    --accent-foreground: 220 14% 96%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 222 80% 53%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+
+    --card: 224 71% 6%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 224 71% 6%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 222 80% 53%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 222 47% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 220 79% 57%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 15%;
+    --input: 217 33% 15%;
+    --ring: 222 80% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .fare-card {
+    @apply transition-all hover:shadow-sm hover:border-border/80 hover:-translate-y-0.5 duration-200;
+  }
+  
+  .search-container {
+    @apply relative z-10 shadow-sm rounded-lg bg-card border border-border/60;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-r from-primary/90 to-accent/90;
+  }
+
+  /* Linear-inspired styling */
+  .linear-card {
+    @apply bg-card border border-border/60 rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
+  }
+  
+  .linear-input {
+    @apply bg-background border border-border rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 outline-none transition-all duration-200;
+  }
+  
+  .linear-sidebar {
+    @apply bg-card border-r border-border/60;
+  }
+  
+  .linear-header {
+    @apply border-b border-border/60 py-4;
+  }
+  
+  .linear-button {
+    @apply rounded-md px-4 py-2 text-sm font-medium transition-colors;
+  }
+}
